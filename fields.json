@@ -1,14 +1,14 @@
 [
   {
     "title": "Процессоры",
-    "slug": "cpu"
+    "name": "cpu"
   },
   {
     "title": "Материнские карты",
-    "slug": "boards"
+    "name": "mat-plati"
   },
   {
     "title": "Корпусы",
-    "slug": "frame"
+    "name": "frame"
   }
 ]
