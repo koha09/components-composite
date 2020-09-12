@@ -32,10 +32,10 @@ $categories = get_terms( array(
                             <label><?php echo $field->title ?></label>
                         </th>
                         <td>
-                            <select name="<?echo $field->slug ?>">
+                            <select name="<?echo $field->name ?>">
 				                <?
 				                foreach ( $categories as $c ) {
-					                $selected = $c->slug == esc_attr( get_option( $field->slug ) );
+					                $selected = $c->slug == esc_attr( get_option( $field->name ) );
 					                if ( $selected ) {
 						                echo "<option value='$c->slug' selected>$c->name</option>";
 					                } else {
