@@ -1,28 +1,58 @@
-import React, {useState, useEffect} from 'react'
-import ConfiguratorGroup from './ConfiguratorGroup'
+import React, { useState, useEffect } from "react"
+import { connect } from "react-redux"
+import ConfiguratorCategory from "./ConfiguratorCategory"
+import ConfiguratorInfo from "./ConfiguratorInfo"
 
-class Configurator extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            categories: []
-        }
-    }
+function Configurator({ categories, cart}) {
+  if (categories.length === 0) {
+    return (
+      <div>
+        <h3>Происходит загрузка данных...</h3>
+      </div>
+    )
+  }
+  return (
+    <React.Fragment>
+      <ConfiguratorInfo items={cart} />
+      {
+        // Loop of categories
+        categories.map((category) => {
+          // Make query
+          const query = category.terms
+            .map((term) => {
+              return cart.reduce((ac, item) => {
+                if(item["attributes"][term]){
+                  return {
+                    name: item["attributes"][term].name,
+                    value: item["attributes"][term].options[0]
+                  }
+                }else{
+                  return ac
+                }
+              }, null)
+            })
+            .filter((it) => it != null)
+            console.log(query)
 
-    componentDidMount() {
-        fetch('/wp-json/constructor/v1/get-categories')
-            .then((response) => response.json())
-            .then((data) => this.setState({categories: data}))
-    }
-
-    render() {
-        return (
-            <div>
-                {this.state.categories.map(item => (
-                <ConfiguratorGroup key={item.name} title={item.title} name={item.name}/>))}
-            </div>
-        )
-    }
+          return (
+            <ConfiguratorCategory
+              key={category.slug}
+              data={category}
+              query={query}
+            />
+          )
+        })
+      }
+    </React.Fragment>
+  )
 }
 
-export default Configurator
+
+const mapProps = (state) => {
+  return {
+    categories: state.categories,
+    cart: state.cart
+  }
+}
+const connectToStore = connect(mapProps,null)
+export default connectToStore(Configurator)
