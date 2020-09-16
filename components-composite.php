@@ -13,13 +13,14 @@
  */
 
 defined( 'ABSPATH' ) || exit;
+if ( ! defined( 'COCO_PLUGIN' ) ) {
+	include_once (__DIR__ . '/includes/class-composite.php');
 
-require __DIR__ . '/includes/class-composite.php';
 
+	function CompositePlugin() {
+		return Composite::instance();
+	}
 
-function CompositePlugin() {
-	return Composite::instance();
+	// Global for backwards compatibility.
+	$GLOBALS['components-composition'] = CompositePlugin();
 }
-
-// Global for backwards compatibility.
-$GLOBALS['components-composition'] = CompositePlugin();
