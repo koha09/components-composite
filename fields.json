@@ -1,14 +1,12 @@
 [
   {
     "title": "Процессоры",
-    "name": "cpu"
+    "slug": "processori",
+    "terms": ["pa_socket"]
   },
   {
     "title": "Материнские карты",
-    "name": "mat-plati"
-  },
-  {
-    "title": "Корпусы",
-    "name": "frame"
+    "slug": "materinskie-plati",
+    "terms": ["pa_socket"]
   }
 ]
