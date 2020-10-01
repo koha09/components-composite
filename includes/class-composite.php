@@ -28,7 +28,7 @@ class Composite {
 			add_action( 'rest_api_init', array( $this, 'rest_api_init' ) );
 		} else {
 			wp_register_script( 'constructor', plugins_url( '../assets/js/bundle.js', __FILE__ ), array(), '1.0.0', 'all' );
-			add_shortcode( 'composite_constructor', array( $this, 'composite_constructor' ) );
+			add_shortcode( 'configurator', array( $this, 'composite_constructor' ) );
 			if ( is_admin() ) {
 				add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 				add_action( 'admin_init', array( $this, 'admin_init' ) );
@@ -131,7 +131,7 @@ class Composite {
 			return new WP_Error( 'no_find_field', 'Не удалось найти field', [ 'status' => 404 ] );
 		}
 		$args  = array(
-			'posts_per_page' => 2,
+			'posts_per_page' => 10,
 			'page'           => $page,
 			'category'       => $slug,
 			'paginate'       => true
@@ -166,6 +166,9 @@ class Composite {
 				'id'         => $item->get_id(),
 				'sku'        => $item->get_sku(),
 				'category'   => $slug,
+				'link' => $item->get_permalink(),
+				'description' => $item->get_description(),
+				'image' => $item->get_image(),
 				'attributes' => $attributes
 			);
 		}, $products->products );
@@ -259,7 +262,7 @@ class Composite {
 
 	// templates
 	public function composite_constructor( $atts, $content = null ) {
-		include_once plugin_dir_path( __DIR__ ) . '\\templates\\constructor.php';
+		include_once plugin_dir_path( __DIR__ ) . '/templates/constructor.php';
 		wp_enqueue_script( 'constructor' );
 	}
 
