@@ -9,10 +9,10 @@ const Pagination = ({onChangePage,count,current})=>{
     if(current > 1 ) {
       result.push((
         <React.Fragment>
-        <li>
+        <li key={'prev'}>
           <a className="prev page-numbers" onClick={()=>onChangePage(current-1)}>Предыдущий</a>
         </li>
-        <li>
+        <li key={current-1}>
           <a className="page-numbers" onClick={()=>onChangePage(current-1)}>{current-1}</a>
         </li>
         </React.Fragment>
@@ -20,7 +20,7 @@ const Pagination = ({onChangePage,count,current})=>{
     }
     result.push(
       (
-        <li>
+        <li key={current}>
         <span aria-current="page" className="page-numbers current">
           {current}
         </span>
@@ -30,10 +30,10 @@ const Pagination = ({onChangePage,count,current})=>{
     if(current+1 <= count) {
       result.push((
         <React.Fragment>
-            <li>
+          <li key={current+1}>
             <a className="page-numbers" onClick={()=>onChangePage(current+1)}>{current+1}</a>
           </li>
-          <li>
+          <li key={'next'}>
             <a className="next page-numbers" onClick={()=>onChangePage(current+1)}>Следующая</a>
           </li>        
         </React.Fragment>
