@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react"
 import PropTypes from "prop-types"
 import { connect } from "react-redux"
 import ConfiguratorItem from "./ConfiguratorItem"
+import ProductList from './ui/ProductList'
+import Pagination from './ui/Pagination'
 import {removeCart} from '../redux/actions'
 
 
@@ -10,8 +12,7 @@ class ConfiguratorCategory extends React.Component {
   constructor(props){
     super(props)
     this.onAddProductToCart = this.onAddProductToCart.bind(this)
-    this.onClickNextPage = this.onClickNextPage.bind(this)
-    this.onClickPreviousPage = this.onClickPreviousPage.bind(this)
+    this.onChangePage = this.onChangePage.bind(this)
     this.state = {
       items: {},
       page: 1,
@@ -31,13 +32,9 @@ class ConfiguratorCategory extends React.Component {
   onAddProductToCart(choosedItem) {
     this.setState({ ...this.state, choosedItem })
   }
-  onClickPreviousPage() {
-    this.setState({ ...this.state, page: this.state.page - 1, canLoad: true }, () => {
-      this.getData(this.state.page)
-    })
-  }
-  onClickNextPage() {
-    this.setState({ ...this.state, page: this.state.page + 1, canLoad: true }, () => {
+  onChangePage(page){
+    this.setState({ ...this.state, page, canLoad: true }, () => {
+      console.log(this.state.page)
       this.getData(this.state.page)
     })
   }
@@ -73,59 +70,33 @@ class ConfiguratorCategory extends React.Component {
   }
 
   render() {
-    const {items,canLoad,choosedItem,page} = this.state;
+    const {items,canLoad,choosedItem,page} = this.state
     const data = this.props.data
+
     if (items.products && !canLoad) {
-      if (choosedItem) {
-        // Render if own products is selected
-        return (
-          <div className={"configuration-group"}>
-            <h2 className={"configuration-group__title"}>{data.title}</h2>
-            <span>Выбран: {choosedItem.name}</span>
-            <button
-              onClick={() => {
-                this.props.dispatch(removeCart(choosedItem))
-                this.setState({ ...this.state, choosedItem: null })
-              }}
-            >
-              X
-            </button>
-          </div>
-        )
-      } else {
-        // Render category products
-        return (
-          <div className={"configuration-group"}>
-            <h2 className={"configuration-group__title"}>{data.title}</h2>
-            <div className={"configuration-group__list"}>
-              {items.products.map((item) => (
-                <ConfiguratorItem
-                  key={item.id}
-                  data={item}
-                  onAddProductToCart={this.onAddProductToCart}
-                />
-              ))}
-            </div>
-            <div className="pagination">
-              <button
-                disabled={page == 1}
-                className="pagination__action btn-secondary"
-                onClick={this.onClickPreviousPage}
-              >
-                {"<"}
-              </button>
-              <div className="pagination__counter">{page}</div>
-              <button
-                disabled={page >= items.max_num_pages}
-                className="pagination__action"
-                onClick={this.onClickNextPage}
-              >
-                {">"}
-              </button>
-            </div>
-          </div>
-        )
-      }
+      return (
+        <React.Fragment>
+          <ProductList
+            title={data.title}
+            onChangePage={this.onChangePage}
+            page={page}
+            choosed={choosedItem}
+            onClickRemove={() => {
+              this.props.dispatch(removeCart(choosedItem));
+              this.setState({ ...this.state, choosedItem: null });
+            }}
+            count={items.max_num_pages}
+          >
+            {items.products.map((item) => (
+              <ConfiguratorItem
+                key={item.id}
+                data={item}
+                onAddProductToCart={this.onAddProductToCart}
+              />
+            ))}
+          </ProductList>
+        </React.Fragment>
+      );
     }
     // Show loading
     else return (
