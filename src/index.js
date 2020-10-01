@@ -8,8 +8,9 @@ import thunk from 'redux-thunk'
 import { fetchCategories } from './redux/actions'
 
 const store = createStore(rootReducer, compose(
-        applyMiddleware(thunk),
-        window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())
+        applyMiddleware(thunk)
+        //,window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+        )
     )
 store.dispatch(fetchCategories())
 
