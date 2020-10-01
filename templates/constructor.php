@@ -12,7 +12,6 @@
 <div>
 
 </div>
-<h2>Системный блок</h2>
 <div id="configuration">
 
 </div>
