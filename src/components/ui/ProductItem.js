@@ -2,7 +2,6 @@ import React from 'react'
 
 const ProductItem = ({product,children})=>{
     const {name,description,image,id,sku,link} = product
-    console.log(image)
     return (
       <li className="product-item product type-product status-publish js-columns-result ">
         <div className="product-inner">

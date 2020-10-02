@@ -18,8 +18,8 @@ function Configurator({ categories, cart}) {
         // Loop of categories
         categories.map((category) => {
           // Make query
-          const query = category.terms
-            .map((term) => {
+          const query = category.terms.map((term) => {
+              
               return cart.reduce((ac, item) => {
                 if(item["attributes"][term]){
                   return {
@@ -30,9 +30,7 @@ function Configurator({ categories, cart}) {
                   return ac
                 }
               }, null)
-            })
-            .filter((it) => it != null)
-            console.log(query)
+            }).filter((it) => it)
 
           return (
             <ConfiguratorCategory

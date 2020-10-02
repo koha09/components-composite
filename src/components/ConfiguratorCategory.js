@@ -34,7 +34,6 @@ class ConfiguratorCategory extends React.Component {
   }
   onChangePage(page){
     this.setState({ ...this.state, page, canLoad: true }, () => {
-      console.log(this.state.page)
       this.getData(this.state.page)
     })
   }

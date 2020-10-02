@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from "prop-types"
 
 const Pagination = ({onChangePage,count,current})=>{
-    console.log(current, count)
   const generatePagination = ()=>{
     const result = []
 
