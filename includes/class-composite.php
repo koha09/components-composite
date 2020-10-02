@@ -7,8 +7,8 @@
  */
 
 defined( 'ABSPATH' ) || exit;
-if ( ! defined( 'COCO_PLUGIN_FILE' ) ) {
-	define( 'COCO_PLUGIN_FILE', __FILE__ );
+if ( ! defined( 'CONFIGURATOR_PLUGIN_FILE' ) ) {
+	define( 'CONFIGURATOR_PLUGIN_FILE', __FILE__ );
 }
 
 class Composite {
@@ -28,7 +28,7 @@ class Composite {
 			add_action( 'rest_api_init', array( $this, 'rest_api_init' ) );
 		} else {
 			wp_register_script( 'constructor', plugins_url( '../assets/js/bundle.js', __FILE__ ), array(), '1.0.0', 'all' );
-			add_shortcode( 'configurator', array( $this, 'composite_constructor' ) );
+			add_shortcode( 'CONFIGURATOR', array( $this, 'CONFIGURATOR_template' ) );
 			if ( is_admin() ) {
 				add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 				add_action( 'admin_init', array( $this, 'admin_init' ) );
@@ -37,9 +37,6 @@ class Composite {
 
 	}
 
-	private static function get_wc_version() {
-		return defined( 'WC_VERSION' ) && WC_VERSION ? WC_VERSION : null;
-	} // END get_wc_version()
 
 	private static function is_request_api() {
 		if ( empty( $_SERVER['REQUEST_URI'] ) ) {
@@ -62,19 +59,16 @@ class Composite {
 
 	// Hook handles
 	public function admin_init() {
-		foreach ( $this->fields as $field ) {
-			register_setting( 'coco-plugin-settings-group', $field->slug );
-		}
-
+		register_setting( 'CONFIGURATOR-plugin-settings-group', 'shema' );
 	}
 
 	public function admin_menu() {
 		add_submenu_page( 'edit.php?post_type=product',
-			"Редактор сборщика Woocommerce",
-			"Редактор сборщика",
+			"Конфигуратор ПК Woocommerce",
+			"Конфигуратор ПК",
 			'manage_options',
-			'coco_editor',
-			array( $this, 'settings_page' ),
+			'CONFIGURATOR_editor',
+			array( $this, 'settings_page_template' ),
 			'55.4' );
 	}
 
@@ -85,13 +79,7 @@ class Composite {
 
 
 	private function get_fields() {
-		$path    = plugin_dir_url( __DIR__ ) . 'fields.json';
-		$request = wp_remote_get( $path );
-		if ( is_wp_error( $request ) ) {
-			throw new Error( "Bad request. JSON data file cant't downloaded." );
-		}
-		$body         = wp_remote_retrieve_body( $request );
-		$this->fields = json_decode( $body );
+		$this->fields = json_decode(get_option('shema'));
 	}
 
 	// rest
@@ -142,21 +130,21 @@ class Composite {
 			foreach ( $terms as $term ) {
 				array_push( $tax_query_array, array(
 					'taxonomy' => $term['name'],
-					'field'    => 'options',
+					'field'    => 'term_id',
 					'operator' => 'in',
 					'terms'    => $term['value']
 				) );
 			}
 			$query->set('tax_query',$tax_query_array);
 		}
-
 		$products           = $query->get_products();
 		$products->products = array_map( function ( $item ) use ( $slug ) {
 			$attributes = array_map( function ( $attr ) {
 				return array(
 					'id'      => $attr->get_id(),
 					'name'    => $attr->get_name(),
-					'options' => $attr->get_options()
+					'options' => $attr->get_options(),
+					'terms' => $attr->get_terms()
 				);
 			}, $item->get_attributes() );
 
@@ -261,13 +249,13 @@ class Composite {
 	}
 
 	// templates
-	public function composite_constructor( $atts, $content = null ) {
+	public function CONFIGURATOR_template( $atts, $content = null ) {
 		include_once plugin_dir_path( __DIR__ ) . '/templates/constructor.php';
 		wp_enqueue_script( 'constructor' );
 	}
 
-	public function settings_page() {
-		//include_once plugin_dir_path( __DIR__ ) . '\\templates\\settings-page.php';
+	public function settings_page_template() {
+		include_once plugin_dir_path( __DIR__ ) . '/templates/settings-page.php';
 	}
 }
 

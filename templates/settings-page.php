@@ -5,51 +5,34 @@
  * Date: 09.09.2020
  * Time: 15:51
  */
-
-$categories = get_terms( array(
-	'taxonomy' => 'product_cat'
-));
+$default = '[
+          {
+            "title": "Процессоры",
+            "slug": "processori",
+            "terms": ["pa_soket"]
+          },
+          {
+            "title": "Материнские карты",
+            "slug": "materinskie-plati",
+            "terms": ["pa_soket"]
+          }
+        ]';
+$value = get_option('shema')?get_option('shema'):$default;
 
 ?>
 <div class="wrap">
     <form method="post" action="options.php">
-	    <?php settings_fields( 'coco-plugin-settings-group' ); ?>
-	    <?php do_settings_sections( 'coco-plugin-settings-group' ); ?>
+	    <?php settings_fields( 'configurator-plugin-settings-group' ); ?>
+	    <?php do_settings_sections( 'configurator-plugin-settings-group' ); ?>
         <div class="nav-tab-wrapper">
             <div class="nav-tab nav-tab-active">Основное</div>
         </div>
         <h1 class="screen-reader-text">Основное</h1>
-        <h2>Категории</h2>
+        <h2>Конфигурация сборщика ПК</h2>
         <p>
-            Прикрепите к разделам соответствующие категории товаров
+            Задайте настройки конфигуратора
         </p>
-        <table>
-            <?php
-                foreach($this->fields as $field) {
-	                ?>
-                    <tr valign="top">
-                        <th scope="row">
-                            <label><?php echo $field->title ?></label>
-                        </th>
-                        <td>
-                            <select name="<?echo $field->name ?>">
-				                <?
-				                foreach ( $categories as $c ) {
-					                $selected = $c->slug == esc_attr( get_option( $field->name ) );
-					                if ( $selected ) {
-						                echo "<option value='$c->slug' selected>$c->name</option>";
-					                } else {
-						                echo "<option value='$c->slug'>$c->name</option>";
-					                }
-				                }
-				                ?>
-                            </select>
-                        </td>
-                    </tr>
-	                <?php
-                }
-            ?>
-        </table>
+        <textarea name="shema" style="width: 600px" rows="16"><?php echo $value?></textarea>
         <?php submit_button(); ?>
     </form>
 </div>
