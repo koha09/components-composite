@@ -2,15 +2,14 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import Pagination from './Pagination'
 
-const ProductList = ({children,title,choosed,onClickRemove,onChangePage,page,count})=>{
-    const [canShow, setCanShow] = useState(true)
+const ProductList = ({children,title,choosed,onClickRemove,onChangePage,page,count,canShow,setCanShow})=>{
     if(choosed)
         return (
             <div className='main-products main-products-list js-columns-result columns-6' data-columns="6">
             <div style={styles.header}>
                 <h2 style={styles.header__title}>{title}</h2>
                 <span style={styles.header__product}>{choosed.name}</span>
-                <span className="btn btn-danger" style={styles.header__btnRemove} onClick={onClickRemove}>X</span>
+                <span className="btn btn-danger" style={styles.header__btnRemove} onClick={onClickRemove}>&times;</span>
             </div>
         </div>
         )
@@ -18,14 +17,14 @@ const ProductList = ({children,title,choosed,onClickRemove,onChangePage,page,cou
         {
             if(canShow){
                 return (
-                    <React.Fragment>
-                        <div className='main-products main-products-list js-columns-result columns-6' data-columns="6">
+                    <React.Fragment key={title}>
+                        <div className='main-products main-products-grid js-columns-result columns-6' data-columns="6">
                             <div style={styles.header}>
                                 <h2 style={styles.header__title}>{title}</h2>
                                 <span style={styles.header__product}></span>
                                 <button onClick={()=>setCanShow(false)}>Скрыть</button>                            
                             </div>                        
-                            <ul className='products list shop-page response-content clearfix equal-container better-height'>
+                            <ul className='products grid shop-page response-content clearfix equal-container better-height'>
                                 {children}
                             </ul>
                         </div>
@@ -62,7 +61,6 @@ const styles = {
       fontSize: 22,
       marginLeft: 12
   },
-  header__product: {},
   header__btnRemove: {
       width: '40px',
       height: '40px',
@@ -70,8 +68,6 @@ const styles = {
       textAlign: 'center',
       padding: 0,
       borderRadius: 0
-  },
-  header__btn: {
   },
 };
 

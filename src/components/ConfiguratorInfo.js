@@ -9,7 +9,7 @@ const ConfiguratorInfo = ({items}) => {
                 body: JSON.stringify({'ids': items.map(i => i.id)})
             })
             .then((response) => response.text())
-            .then((link)=> location.href=link)
+            .then((link)=> location.href='https://elsie.store/cart-2/')
             .catch((ex) => {
                 console.error(ex)
             })
@@ -17,7 +17,8 @@ const ConfiguratorInfo = ({items}) => {
     if(items.length) {
         return (
             <div style={styles.configurator}>
-                <span>В сборку включено: {items.length} позиции</span>
+                <div>В сборку включены: <i>{items.map(it=>it.name).join(', ')}</i></div>
+                <div>На общую сумму <strong>{items.map(it=>it.price).reduce((a,b)=>parseInt(a)+parseInt(b))} руб.</strong></div>
                 <button style={styles.action} onClick={() => onClick()}>Собрать</button>
             </div>
         )
@@ -44,7 +45,8 @@ let styles = {
         border: '1px solid #e1e1e1',
         padding: '20px',
         display: 'flex',
-        alignItems: 'center'
+        flexDirection: 'column',
+        alignItems: 'flex-start'
     },
     empty:{
 
@@ -53,8 +55,8 @@ let styles = {
 
     },
     action: {
-        padding: '.2em 1em',
-        marginLeft: '2em'
+        padding: '.2em 2em',
+        marginTop: '1em'
     }
 
 }

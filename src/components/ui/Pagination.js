@@ -11,7 +11,7 @@ const Pagination = ({onChangePage,count,current})=>{
         <li key={'prev'}>
           <a className="prev page-numbers" onClick={()=>onChangePage(current-1)}>Предыдущий</a>
         </li>
-        <li key={current-1}>
+        <li key={`${current-1}`}>
           <a className="page-numbers" onClick={()=>onChangePage(current-1)}>{current-1}</a>
         </li>
         </React.Fragment>
@@ -19,7 +19,7 @@ const Pagination = ({onChangePage,count,current})=>{
     }
     result.push(
       (
-        <li key={current}>
+        <li key={`${current}`}>
         <span aria-current="page" className="page-numbers current">
           {current}
         </span>
@@ -29,7 +29,7 @@ const Pagination = ({onChangePage,count,current})=>{
     if(current+1 <= count) {
       result.push((
         <React.Fragment>
-          <li key={current+1}>
+          <li key={`${current+1}`}>
             <a className="page-numbers" onClick={()=>onChangePage(current+1)}>{current+1}</a>
           </li>
           <li key={'next'}>
@@ -52,10 +52,6 @@ const Pagination = ({onChangePage,count,current})=>{
           </ul>
         </div>
       </nav>
-      {/*<p className="woocommerce-result-count">*/}
-        {/*{" "}*/}
-        {/*/!*<span>Showing 1–12</span> of 34 results*!/*/}
-      {/*</p>*/}
     </div>
   );
 }

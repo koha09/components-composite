@@ -3,7 +3,6 @@ import PropTypes from "prop-types"
 import { connect } from "react-redux"
 import ConfiguratorItem from "./ConfiguratorItem"
 import ProductList from './ui/ProductList'
-import Pagination from './ui/Pagination'
 import {removeCart} from '../redux/actions'
 
 
@@ -17,15 +16,16 @@ class ConfiguratorCategory extends React.Component {
       items: {},
       page: 1,
       choosedItem: null,
-      canLoad: false,
+      canLoad: true,
+      canShow: false
     }
   }
   componentDidMount(){
     this.getData()
   }
-  componentDidUpdate(prevProps){
-    if(this.props.query != prevProps.query){
-      this.getData()
+  componentDidUpdate(nextProps){
+    if(this.props.query.length != nextProps.query.length && this.state.choosedItem === null){
+      this.getData();
     }
   }
   // Listeners
@@ -38,6 +38,7 @@ class ConfiguratorCategory extends React.Component {
     })
   }
   getData (page = 1) {
+    this.setState({...this.state,canLoad: true})
     const { data,query } = this.props
     const parameters = {
       page: page,
@@ -58,11 +59,11 @@ class ConfiguratorCategory extends React.Component {
 
     fetch(`${window.location.origin}/wp-json/constructor/v1/get-products-by-categories/${data.slug}`, requestOptions)
       .then((response) => response.json())
-      .then((respData) => {
+      .then((items) => {
         this.setState({
           ...this.state,
-          items: respData,
-          query: query,
+          items,
+          query,
           canLoad: false,
         });
       });
@@ -72,7 +73,8 @@ class ConfiguratorCategory extends React.Component {
     const {items,canLoad,choosedItem,page} = this.state
     const data = this.props.data
 
-    if (items.products && !canLoad) {
+    if (!canLoad) {
+      if(items.products?.length ?? 0)
       return (
         <React.Fragment>
           <ProductList
@@ -84,7 +86,9 @@ class ConfiguratorCategory extends React.Component {
               this.props.dispatch(removeCart(choosedItem));
               this.setState({ ...this.state, choosedItem: null });
             }}
+            canShow={this.state.canShow}
             count={items.max_num_pages}
+            setCanShow={(show)=>this.setState({...this.state,canShow: show})}
           >
             {items.products.map((item) => (
               <ConfiguratorItem
@@ -96,16 +100,49 @@ class ConfiguratorCategory extends React.Component {
           </ProductList>
         </React.Fragment>
       );
+      else return (
+        <div className='main-products main-products-list js-columns-result columns-6' data-columns="6">
+            <div style={styles.header}>
+                <h2 style={styles.header__title}>{data.title}</h2>
+            </div>
+            <div>Нет подходящих товаров</div>
+        </div>
+      )
     }
     // Show loading
     else return (
-      <div className={"configuration-group"}>
-        <h2 className={"configuration-group__title"}>{data.title}</h2>
-      <div>Идет загрузка</div>
-      </div>
+      <div className='main-products main-products-list js-columns-result columns-6' data-columns="6">
+        <div style={styles.header}>
+            <h2 style={styles.header__title}>{data.title}<img style={styles.spinner} src='/wp-content/themes/azone/assets/images/loader.gif'></img></h2>
+        </div>
+    </div>
     )
   }
 }
+
+const styles = {
+  header: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      marginTop: 10,
+      marginBottom: 10,
+      alignItems: 'center',
+      background: '#f8f8f8',
+      border: '1px solid #e1e1e1',
+      
+  },
+  spinner:{
+    height: '30px',
+    margin: '10px'
+  },
+  header__title: {
+      margin: 0,
+      fontSize: 22,
+      marginLeft: 12,
+      lineHeight: '50px'
+  },
+};
+
 
 ConfiguratorCategory.propTypes = {
   data: PropTypes.object.isRequired,

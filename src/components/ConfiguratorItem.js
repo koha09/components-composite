@@ -8,7 +8,7 @@ const ConfiguratorItem = ({onAddProductToCart,data})=>{
   const dispatch = useDispatch()
   return (
     <ProductItem product={data}>
-      <button onClick={()=>{
+      <button style={styles.action} onClick={()=>{
         onAddProductToCart(data)
         dispatch(addCart(data))
       }}>Добавить</button>
@@ -20,5 +20,10 @@ ConfiguratorItem.propTypes = {
     data: PropTypes.object.isRequired,
     onAddProductToCart: PropTypes.func.isRequired
 }
-
+const styles = {
+  action: {
+        padding: '.2em 2em',
+        marginTop: '1em'
+  }
+}
 export default connect(null,null)(ConfiguratorItem)
